@@ -96,7 +96,9 @@ ggplot(force_counts, aes(x = YEAR2, y = Force_Count, color = Force_Level)) +
        y = "Number of Stops per Force Level",
        color = "Force Level") +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom",
+        panel.border = element_rect(color = "black", fill = NA, size = 1)  # Adds borders around each facet
+  )
 
 #PLOT 2: Force Level PROPORTIONS Over Time by Race
 ggplot(force_proportions, aes(x = YEAR2, y = Force_Proportion, color = Force_Level)) +
@@ -111,4 +113,6 @@ ggplot(force_proportions, aes(x = YEAR2, y = Force_Proportion, color = Force_Lev
        y = "Proportion of Stops",
        color = "Force Level") +
   theme_minimal() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom",
+        panel.border = element_rect(color = "black", fill = NA, size = 1)  # Adds borders around each facet
+  )
