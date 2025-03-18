@@ -5,9 +5,10 @@ library(tidyr)
 library(nnet)
 library(ggplot2)
 library(tidyr)
+library(stargazer)
 
-final_dataset <- read_csv("C:/Users/athen/Documents/GitHub/StatsII_GroupProject/data/SQFwithcrimerates.csv", show_col_types = FALSE)
-
+github_url <- "https://raw.githubusercontent.com/rodriguesathena/StatsII_GroupProject/refs/heads/main/data/SQFwithcrimerates.csv"
+final_dataset <- read_csv(github_url, show_col_types = FALSE)
 # REFERENCE CATEGORIES
 final_dataset$Force_Level <- factor(ifelse(final_dataset$Weapon_Force == 1, "Weapon_Force",
                                       ifelse(final_dataset$Non_Weapon_Force == 1, "Non_Weapon_Force", "No_Force")),
@@ -16,7 +17,7 @@ final_dataset$SUSPECT_RACE_DESCRIPTION <- relevel(factor(final_dataset$SUSPECT_R
 final_dataset$Stop_Outcome <- factor(ifelse(final_dataset$Summons_Issued == 1, "Summons",
                                        ifelse(final_dataset$Arrest_Made == 1, "Arrest", "No_Charge")),
                                 levels = c("No_Charge", "Summons", "Arrest"))  # Reference = No Charge
-#removing precincts 14 and 22 (include why!)
+#removing precincts 14 and 22
 final_dataset <- final_dataset %>%
   filter(!STOP_LOCATION_PRECINCT %in% c(14, 22))
 
@@ -29,7 +30,7 @@ force_model <- multinom(Force_Level ~ Centered_Year * Post_2021 +
                           Age_Squared + Suspect_Weight + Crime_Rate + factor(Borough), 
                         data = final_dataset)
 summary(force_model)
-#z-score, p-values
+stargazer(force_model, type = "text", out = "force_model_summary.txt")#z-score, p-values
 z_scores <- summary(force_model)$coefficients / summary(force_model)$standard.errors
 p_values <- 2 * (1 - pnorm(abs(z_scores)))
 print(p_values)
@@ -49,6 +50,10 @@ conf_intervals <- data.frame(
 
 print("Exponentiated Coefficients (Odds Ratios) with 95% Confidence Intervals:")
 print(conf_intervals)
+
+
+
+stargazer(force_model, type= "text")
 
 # RESIDUALS and ACF
 residuals <- residuals(force_model, type = "deviance")

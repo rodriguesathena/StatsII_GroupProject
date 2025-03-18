@@ -13,7 +13,7 @@ final_dataset$Force_Level <- factor(ifelse(final_dataset$Weapon_Force == 1, "Wea
                                       ifelse(final_dataset$Non_Weapon_Force == 1, "Non_Weapon_Force", "No_Force")),
                                levels = c("No_Force", "Non_Weapon_Force", "Weapon_Force"))
 
-force_model <- multinom(Force_Level ~ Post_2021 + SUSPECT_RACE_DESCRIPTION + 
+force_model <- multinom(Force_Level ~ Elected + SUSPECT_RACE_DESCRIPTION + 
                           Frisked + Searched + Violent_Crime_Flag + 
                           Other_Person_Stopped + Proximity_To_Scene + Crime_Rate,
                         data = final_dataset)
@@ -32,7 +32,7 @@ print(high_vif)
 final_dataset$Force_Level <- factor(final_dataset$Force_Level, 
                                levels = c("No_Force", "Non_Weapon_Force", "Weapon_Force"), 
                                ordered = TRUE)
-ordered_force_model <- polr(Force_Level ~ YEAR2 + Post_2021 + SUSPECT_RACE_DESCRIPTION + 
+ordered_force_model <- polr(Force_Level ~ YEAR2 + Elected + SUSPECT_RACE_DESCRIPTION + 
                               Frisked + Searched + Violent_Crime_Flag + 
                               Other_Person_Stopped + Proximity_To_Scene + Crime_Rate,
                             data = final_dataset, method = "logistic")
