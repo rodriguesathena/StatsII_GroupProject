@@ -17,20 +17,20 @@ final_dataset$SUSPECT_RACE_DESCRIPTION <- relevel(factor(final_dataset$SUSPECT_R
 final_dataset$Stop_Outcome <- factor(ifelse(final_dataset$Summons_Issued == 1, "Summons",
                                        ifelse(final_dataset$Arrest_Made == 1, "Arrest", "No_Charge")),
                                 levels = c("No_Charge", "Summons", "Arrest"))  # Reference = No Charge
-#removing precincts 14 and 22
+#removing precincts 14 and 22 (include why!)
 final_dataset <- final_dataset %>%
   filter(!STOP_LOCATION_PRECINCT %in% c(14, 22))
 
 
 #ITS Model
-force_model <- multinom(Force_Level ~ Centered_Year * Post_2021 + 
-                          SUSPECT_RACE_DESCRIPTION * Post_2021 + 
+force_model <- multinom(Force_Level ~ Centered_Year * Elected + 
+                          SUSPECT_RACE_DESCRIPTION * Elected + 
                           Covid_Period + Stop_Outcome + Violent_Crime_Flag + 
                           Proximity_To_Scene + Other_Person_Stopped + Suspect_Sex + 
                           Age_Squared + Suspect_Weight + Crime_Rate + factor(Borough), 
                         data = final_dataset)
 summary(force_model)
-stargazer(force_model, type = "text", out = "force_model_summary.txt")#z-score, p-values
+#z-score, p-values
 z_scores <- summary(force_model)$coefficients / summary(force_model)$standard.errors
 p_values <- 2 * (1 - pnorm(abs(z_scores)))
 print(p_values)

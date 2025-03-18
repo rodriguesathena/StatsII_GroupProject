@@ -43,7 +43,7 @@ sqf_data$Violent_Crime_Flag <- ifelse(sqf_data$BACKROUND_CIRCUMSTANCES_VIOLENT_C
 sqf_data$Other_Person_Stopped <- convert_to_binary(sqf_data$OTHER_PERSON_STOPPED_FLAG)
 sqf_data$Proximity_To_Scene <- ifelse(sqf_data$SUSPECTS_ACTIONS_PROXIMITY_TO_SCENE_FLAG == "Y", 1, 0)
 #Age Squared, COVID, Trend Change
-sqf_data$Elected <- ifelse(sqf_data$YEAR2 >= 2022, 1, 0)
+sqf_data$Post_2021 <- ifelse(sqf_data$YEAR2 >= 2022, 1, 0)
 sqf_data <- sqf_data %>%
   mutate(Age_Squared = Suspect_Age^2)
 
@@ -52,7 +52,7 @@ sqf_data$Covid_Period <- ifelse(sqf_data$YEAR2 %in% c(2020, 2021), 1, 0)
 sqf_data <- sqf_data %>% 
   mutate(
     Centered_Year = YEAR2 - 2022,  # 2022 as the reference year
-    Post_2022_Trend = Elected * Centered_Year,  # Interaction term for trend change
+    Post_2022_Trend = Post_2021 * Centered_Year,  # Interaction term for trend change
     Age_Squared = Suspect_Age^2  # Quadratic term for age
   )
 #FORCE OUTCOME
@@ -108,7 +108,7 @@ final_dataset <- sqf_data <- sqf_data %>%
 # CLEANING FINAL DATA
 #keeping necessary columns
 keep <- c("YEAR2", "STOP_LOCATION_PRECINCT", "SUSPECT_RACE_DESCRIPTION", 
-          "Summons_Issued", "Arrest_Made", "Elected", "Covid_Period", "Frisked", 
+          "Summons_Issued", "Arrest_Made", "Post_2021", "Covid_Period", "Frisked", 
           "Searched", "Suspect_Age", "Suspect_Sex", "Suspect_Weight", 
           "Violent_Crime_Flag", "Other_Person_Stopped", 
           "Proximity_To_Scene", "Crime_Rate", 
@@ -121,4 +121,4 @@ print(total_rows_before)
 print(rows_with_NA)
 final_dataset <- na.omit(final_dataset)
 
-#write_csv(final_dataset, "C:/Users/athen/Documents/GitHub/StatsII_GroupProject/data/SQFwithcrimerates.csv")
+write_csv(final_dataset, "C:/Users/athen/Documents/GitHub/StatsII_GroupProject/data/SQFwithcrimerates.csv")
